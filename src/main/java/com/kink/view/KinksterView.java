@@ -23,6 +23,13 @@ public class KinksterView {
 		return view;
 	}
 	
+	public static KinksterView fromEntityMasked(KinksterEntity entity) {
+		KinksterView view = new KinksterView();
+		view.setGroupId(entity.getGroupId());
+		view.setNickname(entity.getNickname());
+		return view;
+	}
+	
 	@Override
 	public int hashCode() {
 		return id.hashCode();

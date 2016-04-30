@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.websocket.server.PathParam;
+
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -14,23 +16,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kink.dao.KinkDao;
 import com.kink.request.CreateKinkRequest;
 import com.kink.view.KinkView;
+import com.kink.view.KinkWithLevelView;
 
 @Controller
 @Log4j
-@RequestMapping("/api/admin")
-public class AdminAPI {
+@RequestMapping("/api/kink")
+public class KinkAPI {
 	
 	@Autowired
 	@Setter
 	private KinkDao kinkDao;
 	
 	@ApiOperation(value = "createKinks")
-	@RequestMapping(value = "/kinks/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
 	public void createKink(@RequestBody CreateKinkRequest r){
 		r.validate();
@@ -39,9 +43,19 @@ public class AdminAPI {
 	}
 	
 	@ApiOperation(value = "viewKinks")
-	@RequestMapping(value = "/kinks/view")
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<KinkView> viewKinks(){
-		return kinkDao.getAllKinks().stream().map(KinkView::fromEntity).collect(Collectors.toList());
+	public List<KinkView> viewKinks(@RequestParam(value = "page", required = false) Integer page){
+		int pageNo = (page == null) ? 0 : page;
+		return kinkDao.getPageOfKinks(pageNo).stream().map(KinkView::fromEntity).collect(Collectors.toList());
+	}
+	
+	@ApiOperation(value = "viewKinksByKinkster")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<KinkWithLevelView> viewKinksByKinkster(@RequestParam(value = "page", required = false) Integer page,
+			@PathParam("id") String id){
+		int pageNo = (page == null) ? 0 : page;
+		return kinkDao.getPageOfKinksByKinkster(pageNo,id);
 	}
 }

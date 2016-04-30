@@ -10,6 +10,7 @@ import com.kink.KinkCategory;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
+import com.kink.view.KinkWithLevelView;
 
 @AllArgsConstructor
 public class KinkDao {
@@ -19,7 +20,7 @@ public class KinkDao {
 		
 	}
 
-	public List<KinkEntity> getAllKinks() {
+	public List<KinkEntity> getPageOfKinks(int page) {
 		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
@@ -36,6 +37,12 @@ public class KinkDao {
 	}
 
 	public KinkEntity getKinkById(String kinkId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<KinkWithLevelView> getPageOfKinksByKinkster(int pageNo,
+			String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

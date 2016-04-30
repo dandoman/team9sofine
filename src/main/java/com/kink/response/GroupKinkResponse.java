@@ -27,7 +27,7 @@ public class GroupKinkResponse {
 		Map<KinksterView, List<KinkView>> map = new HashMap<>();
 		compatibleKinks.entrySet().forEach(
 				entry -> {
-					map.put(KinksterView.fromEntity(entry.getKey()),
+					map.put(KinksterView.fromEntityMasked(entry.getKey()),
 							entry.getValue().stream().map(k -> k.getKink())
 									.collect(Collectors.toList()));
 				});

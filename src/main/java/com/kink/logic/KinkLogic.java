@@ -39,6 +39,7 @@ public class KinkLogic {
 				KinkWithLevelView kwl = new KinkWithLevelView();
 				kwl.setKink(KinkView.fromEntity(ke));
 				kwl.setLevel(acked.getInterest());
+				kwl.setDirection(acked.getDirection());
 				return kwl;
 			}).collect(Collectors.toList());
 			kinksterMap.put(k, kinks);
