@@ -87,7 +87,6 @@ public class App {
 	
 	@Bean
 	@Primary
-	//Eventually used c3p0
 	public DataSource dataSource() {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
 		try {
