@@ -68,10 +68,17 @@ public class KinkLogic {
 		return compatibleKinks;
 	}
 
-	public KinksterEntity createKinkster(String nickname, Gender gender,
+	public KinksterEntity createKinksterNewGroup(String nickname, Gender gender,
 			Orientation orientation) {
 		String id = UUID.randomUUID().toString();
 		String groupId = UUID.randomUUID().toString();
+		kinkDao.createKinkster(id,nickname,groupId, gender,orientation);
+		return kinkDao.getKinksterById(id);
+	}
+	
+	public KinksterEntity createKinksterExistingGroup(String nickname, Gender gender,
+			Orientation orientation, String groupId){
+		String id = UUID.randomUUID().toString();
 		kinkDao.createKinkster(id,nickname,groupId, gender,orientation);
 		return kinkDao.getKinksterById(id);
 	}

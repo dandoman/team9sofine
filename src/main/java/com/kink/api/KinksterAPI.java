@@ -46,7 +46,7 @@ public class KinksterAPI {
 	public KinksterGroupResponse createGroup(@RequestBody CreateKinksterGroupRequest r){
 		r.validate();
 		log.info("Create group request: " + r);
-		KinksterEntity k = kinkLogic.createKinkster(r.getNickname(),r.getGender(),r.getOrientation());
+		KinksterEntity k = kinkLogic.createKinksterNewGroup(r.getNickname(),r.getGender(),r.getOrientation());
 		KinksterGroupResponse resp = new KinksterGroupResponse();
 		resp.setGroupId(k.getGroupId());
 		resp.setKinkster(KinksterView.fromEntity(k));
@@ -60,7 +60,10 @@ public class KinksterAPI {
 	public JoinGroupResponse joinGroup(@RequestBody JoinKinksterGroupRequest r){
 		r.validate();
 		log.info("Join group request: " + r);
-		return null;
+		KinksterEntity k = kinkLogic.createKinksterExistingGroup(r.getNickname(),r.getGender(),r.getOrientation(), r.getGroupId());
+		JoinGroupResponse resp = new JoinGroupResponse();
+		resp.setKinkster(KinksterView.fromEntity(k));
+		return resp;
 	}
 	
 	@ApiOperation(value = "acknowledgeKink")
