@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.kink.Direction;
 import com.kink.Gender;
 import com.kink.InterestLevel;
 import com.kink.KinkCategory;
@@ -50,7 +51,7 @@ public class KinkLogic {
 			kinksterMap.put(k, kinks);
 		});
 		
-		List<KinkWithLevelView> myKinks = kinksterMap.get(kinkster).stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
+		List<KinkWithLevelView> myKinks = (kinksterMap.get(kinkster) == null ) ? new ArrayList<>() : kinksterMap.get(kinkster).stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
 		Map<KinksterEntity, List<KinkWithLevelView>> compatibleKinks = new HashMap<>();
 		kinksterMap.entrySet().forEach(entry -> {
 			List<KinkWithLevelView> localKinks = entry.getValue().stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
@@ -81,5 +82,11 @@ public class KinkLogic {
 		String id = UUID.randomUUID().toString();
 		kinkDao.createKinkster(id,nickname,groupId, gender,orientation);
 		return kinkDao.getKinksterById(id);
+	}
+
+	public void acknowledgeKink(String kinkId, String kinksterId,
+			Direction direction, InterestLevel interest) {
+		kinkDao.acknowledgeKink(kinkId,kinksterId,direction,interest);
+		
 	}
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 
 import com.kink.Gender;
 import com.kink.Orientation;
+import com.kink.view.KinksterView;
 
 @Data
 public class KinksterEntity {
@@ -19,5 +20,15 @@ public class KinksterEntity {
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof KinksterEntity)) {
+			return false;
+		}
+		KinksterEntity k = (KinksterEntity) o;
+		
+		return this.id.equals(k.id);
 	}
 }

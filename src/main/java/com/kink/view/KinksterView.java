@@ -20,6 +20,7 @@ public class KinksterView {
 		view.setGroupId(entity.getGroupId());
 		view.setNickname(entity.getNickname());
 		view.setOrientation(entity.getOrientation());
+		view.setId(entity.getId());
 		return view;
 	}
 	
@@ -27,11 +28,22 @@ public class KinksterView {
 		KinksterView view = new KinksterView();
 		view.setGroupId(entity.getGroupId());
 		view.setNickname(entity.getNickname());
+		view.setId(entity.getId());
 		return view;
 	}
 	
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(!(o instanceof KinksterView)) {
+			return false;
+		}
+		KinksterView k = (KinksterView) o;
+		
+		return this.id.equals(k.id);
 	}
 }

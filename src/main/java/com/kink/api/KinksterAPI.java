@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,13 +74,14 @@ public class KinksterAPI {
 	public void acknowledgeKink(@RequestBody AcknowledgeKinkRequest r){
 		r.validate();
 		log.info("Acknowledge kink request: " + r);
+		kinkLogic.acknowledgeKink(r.getKinkId(),r.getKinksterId(),r.getDirection(),r.getInterest());
 	}
 	
 	@ApiOperation(value = "getGroupKinks")
-	@RequestMapping(value = "/{id}/group-kinks", method = RequestMethod.GET)
+	@RequestMapping(value = "/{kinksterId}/group-kinks", method = RequestMethod.GET)
 	@ResponseBody
 	@Transactional
-	public GroupKinkResponse getGroupKinks(@PathParam(value = "id") String kinksterId){
+	public GroupKinkResponse getGroupKinks(@PathVariable String kinksterId){
 		Map<KinksterEntity, List<KinkWithLevelView>> compatibleKinks = kinkLogic.computeCompatibleKinks(kinksterId);
 		return GroupKinkResponse.fromCompatibleKinkMap(kinksterId, compatibleKinks);
 	}
