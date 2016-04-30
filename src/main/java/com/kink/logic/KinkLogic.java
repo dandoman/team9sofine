@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.kink.InterestLevel;
+import com.kink.KinkCategory;
 import com.kink.dao.KinkDao;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;

@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,13 +37,14 @@ public class KinkAPI {
 	@ApiOperation(value = "createKinks")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public void createKink(@RequestBody CreateKinkRequest r){
 		r.validate();
 		log.info("Create kink request: " + r);
 		kinkDao.createKink(r.getCategory(), r.getName(), r.getDescription());
 	}
 	
-	@ApiOperation(value = "viewKinks")
+	@ApiOperation(value = "getKinks")
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public List<KinkView> viewKinks(@RequestParam(value = "page", required = false) Integer page){
@@ -50,7 +52,7 @@ public class KinkAPI {
 		return kinkDao.getPageOfKinks(pageNo).stream().map(KinkView::fromEntity).collect(Collectors.toList());
 	}
 	
-	@ApiOperation(value = "viewKinksByKinkster")
+	@ApiOperation(value = "getKinksByKinkster")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public List<KinkWithLevelView> viewKinksByKinkster(@RequestParam(value = "page", required = false) Integer page,

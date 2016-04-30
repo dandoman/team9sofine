@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,7 @@ public class KinksterAPI {
 	@ApiOperation(value = "createGroup")
 	@RequestMapping(value = "/create-group", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public KinksterGroupResponse createGroup(@RequestBody CreateKinksterGroupRequest r){
 		r.validate();
 		log.info("Create group request: " + r);
@@ -49,6 +51,7 @@ public class KinksterAPI {
 	@ApiOperation(value = "joinGroup")
 	@RequestMapping(value = "/join-group", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public JoinGroupResponse joinGroup(@RequestBody JoinKinksterGroupRequest r){
 		r.validate();
 		log.info("Join group request: " + r);
@@ -58,6 +61,7 @@ public class KinksterAPI {
 	@ApiOperation(value = "acknowledgeKink")
 	@RequestMapping(value = "/acknowledge-kink", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public void acknowledgeKink(@RequestBody AcknowledgeKinkRequest r){
 		r.validate();
 		log.info("Acknowledge kink request: " + r);
@@ -66,6 +70,7 @@ public class KinksterAPI {
 	@ApiOperation(value = "getGroupKinks")
 	@RequestMapping(value = "/{id}/group-kinks", method = RequestMethod.GET)
 	@ResponseBody
+	@Transactional
 	public GroupKinkResponse getGroupKinks(@PathParam(value = "id") String kinksterId){
 		Map<KinksterEntity, List<KinkWithLevelView>> compatibleKinks = kinkLogic.computeCompatibleKinks(kinksterId);
 		return GroupKinkResponse.fromCompatibleKinkMap(kinksterId, compatibleKinks);
