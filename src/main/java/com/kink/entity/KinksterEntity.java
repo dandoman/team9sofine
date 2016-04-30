@@ -11,6 +11,7 @@ import com.kink.Orientation;
 public class KinksterEntity {
 	private String id;
 	private String nickname;
+	private String groupId;
 	private Gender gender;
 	private Orientation orientation;
 	private Date createdAt;

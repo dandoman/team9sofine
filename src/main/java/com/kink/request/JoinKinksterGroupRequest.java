@@ -1,19 +1,16 @@
 package com.kink.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kink.Gender;
 import com.kink.Orientation;
 import com.kink.exception.BadArgsException;
 
-import lombok.Data;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Data
-public class KinksterGroupRequest implements RequestEntity {
+public class JoinKinksterGroupRequest implements RequestEntity{
 	private String nickname;
 	private Gender gender;
 	private Orientation orientation;
+	private String groupId;
 	
+	@Override
 	public void validate() {
 		if(nickname == null){
 			throw new BadArgsException("Must provide a nickname");
@@ -24,5 +21,9 @@ public class KinksterGroupRequest implements RequestEntity {
 		if(orientation == null){
 			throw new BadArgsException("Must provide an orientation");
 		}
+		if(groupId == null){
+			throw new BadArgsException("Must provide a group id");
+		}
 	}
+
 }

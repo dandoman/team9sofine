@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import com.kink.dao.KinkDao;
+import com.kink.logic.KinkLogic;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -58,6 +59,11 @@ public class App {
 	@Bean
 	public KinkDao createKinkDao() {
 		return new KinkDao();
+	}
+	
+	@Bean
+	public KinkLogic createKinkLogic() {
+		return new KinkLogic();
 	}
 	
 	public static void main(String[] args) throws Exception {
