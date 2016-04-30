@@ -10,11 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 
+import com.kink.Gender;
 import com.kink.KinkCategory;
+import com.kink.Orientation;
 import com.kink.dao.mapper.KinkDataMapper;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
+import com.kink.exception.NotFoundException;
 import com.kink.view.KinkWithLevelView;
 
 public class KinkDao {
@@ -34,8 +37,14 @@ public class KinkDao {
 	}
 
 	public KinksterEntity getKinksterById(String kinksterId) {
-		return null;
-		
+		List<KinksterEntity> kinksterById = kinkDataMapper.getKinksterById(kinksterId);
+		if(kinksterById == null) {
+			throw new NotFoundException("Kinkster with id: " + kinksterId + " was not found");
+		}
+		if(kinksterById.isEmpty()) {
+			throw new NotFoundException("Kinkster with id: " + kinksterId + " was not found");
+		}
+		return kinksterById.get(0);
 	}
 
 	public List<AcknowledgedKinkEntity> getAcknowledgedKinksByGroupId(
@@ -53,5 +62,11 @@ public class KinkDao {
 			String id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void createKinkster(String id, String nickname, String groupId, Gender gender,
+			Orientation orientation) {
+		kinkDataMapper.createKinkster(id, nickname, groupId, gender.toString(), orientation.toString());
+		
 	}
 }

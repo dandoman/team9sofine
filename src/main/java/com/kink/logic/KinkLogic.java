@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.kink.Gender;
 import com.kink.InterestLevel;
 import com.kink.KinkCategory;
+import com.kink.Orientation;
 import com.kink.dao.KinkDao;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
+import com.kink.response.KinksterGroupResponse;
 import com.kink.view.KinkView;
 import com.kink.view.KinkWithLevelView;
 
@@ -62,5 +66,13 @@ public class KinkLogic {
 		});
 		
 		return compatibleKinks;
+	}
+
+	public KinksterEntity createKinkster(String nickname, Gender gender,
+			Orientation orientation) {
+		String id = UUID.randomUUID().toString();
+		String groupId = UUID.randomUUID().toString();
+		kinkDao.createKinkster(id,nickname,groupId, gender,orientation);
+		return kinkDao.getKinksterById(id);
 	}
 }

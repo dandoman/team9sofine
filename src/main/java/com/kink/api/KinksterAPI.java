@@ -28,6 +28,7 @@ import com.kink.response.GroupKinkResponse;
 import com.kink.response.JoinGroupResponse;
 import com.kink.response.KinksterGroupResponse;
 import com.kink.view.KinkWithLevelView;
+import com.kink.view.KinksterView;
 
 @Controller
 @Log4j
@@ -45,7 +46,11 @@ public class KinksterAPI {
 	public KinksterGroupResponse createGroup(@RequestBody CreateKinksterGroupRequest r){
 		r.validate();
 		log.info("Create group request: " + r);
-		return null;
+		KinksterEntity k = kinkLogic.createKinkster(r.getNickname(),r.getGender(),r.getOrientation());
+		KinksterGroupResponse resp = new KinksterGroupResponse();
+		resp.setGroupId(k.getGroupId());
+		resp.setKinkster(KinksterView.fromEntity(k));
+		return resp;
 	}
 	
 	@ApiOperation(value = "joinGroup")
