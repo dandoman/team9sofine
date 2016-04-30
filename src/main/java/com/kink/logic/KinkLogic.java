@@ -56,10 +56,14 @@ public class KinkLogic {
 		kinksterMap.entrySet().forEach(entry -> {
 			List<KinkWithLevelView> localKinks = entry.getValue().stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
 			List<KinkWithLevelView> sameKinks = new ArrayList<>();
-			for (KinkWithLevelView myKink : myKinks) {
-				for (KinkWithLevelView theirKink : localKinks) {
-					if(myKink.getKink().getId().equals(theirKink.getKink().getId())) {
-						sameKinks.add(theirKink);
+			if(entry.getKey().getId().equals(kinkster.getId())){
+				sameKinks.addAll(localKinks);
+			} else {
+				for (KinkWithLevelView myKink : myKinks) {
+					for (KinkWithLevelView theirKink : localKinks) {
+						if(isCompatible(myKink,theirKink)) {
+							sameKinks.add(theirKink);
+						}
 					}
 				}
 			}
@@ -88,5 +92,35 @@ public class KinkLogic {
 			Direction direction, InterestLevel interest) {
 		kinkDao.acknowledgeKink(kinkId,kinksterId,direction,interest);
 		
+	}
+	
+	private boolean isCompatible(KinkWithLevelView mine, KinkWithLevelView theirs) {
+		if(mine.getKink().getId().equals(theirs.getKink().getId())) {
+			return isCompatibleDirection(mine.getDirection(), theirs.getDirection());
+		}
+		return false;
+	}
+
+	private boolean isCompatibleDirection(Direction myDirection,
+			Direction theirDirection) {
+		
+		switch (myDirection) {
+			case BOTH :
+				return true;
+			case GIVING :
+				if(Direction.BOTH.equals(theirDirection) || Direction.RECEIVING.equals(theirDirection)){
+					return true;
+				} else {
+					return false;
+				}
+			case RECEIVING : 
+				if(Direction.BOTH.equals(theirDirection) || Direction.GIVING.equals(theirDirection)){
+					return true;
+				} else {
+					return false;
+				}
+			default:
+				return false;
+		}
 	}
 }
