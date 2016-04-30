@@ -2,12 +2,17 @@ package com.kink.bootstrap;
 
 import java.beans.PropertyVetoException;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -28,6 +33,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import com.kink.dao.KinkDao;
+import com.kink.dao.mapper.KinkDataMapper;
 import com.kink.logic.KinkLogic;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -36,6 +42,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = { "com.kink" })
+@MapperScan("com.kink.dao.mapper")
 @EnableSwagger2
 public class App {
 
@@ -78,11 +85,11 @@ public class App {
 	}
 
 	@Bean
-	public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource)
+	public SqlSessionFactory sqlSessionFactory()
 			throws Exception {
 		SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
-		factory.setDataSource(dataSource);
-		return factory;
+		factory.setDataSource(dataSource());
+		return (SqlSessionFactory) factory.getObject();
 	}
 	
 	@Bean
