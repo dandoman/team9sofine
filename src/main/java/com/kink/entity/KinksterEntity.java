@@ -15,4 +15,9 @@ public class KinksterEntity {
 	private Gender gender;
 	private Orientation orientation;
 	private Date createdAt;
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 }

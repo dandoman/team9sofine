@@ -20,4 +20,5 @@ public class KinkView {
 		view.setDescription(entity.getDescription());
 		return view;
 	}
+	
 }

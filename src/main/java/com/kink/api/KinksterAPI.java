@@ -1,6 +1,7 @@
 package com.kink.api;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.websocket.server.PathParam;
 
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kink.entity.KinkEntity;
+import com.kink.entity.KinksterEntity;
 import com.kink.logic.KinkLogic;
 import com.kink.request.AcknowledgeKinkRequest;
 import com.kink.request.JoinKinksterGroupRequest;
@@ -23,6 +26,7 @@ import com.kink.request.CreateKinksterGroupRequest;
 import com.kink.response.GroupKinkResponse;
 import com.kink.response.JoinGroupResponse;
 import com.kink.response.KinksterGroupResponse;
+import com.kink.view.KinkWithLevelView;
 
 @Controller
 @Log4j
@@ -62,7 +66,8 @@ public class KinksterAPI {
 	@ApiOperation(value = "getGroupKinks")
 	@RequestMapping(value = "/{id}/group-kinks", method = RequestMethod.GET)
 	@ResponseBody
-	public List<GroupKinkResponse> getGroupKinks(@PathParam(value = "id") String kinksterId){
-		return null;
+	public GroupKinkResponse getGroupKinks(@PathParam(value = "id") String kinksterId){
+		Map<KinksterEntity, List<KinkWithLevelView>> compatibleKinks = kinkLogic.computeCompatibleKinks(kinksterId);
+		return GroupKinkResponse.fromCompatibleKinkMap(kinksterId, compatibleKinks);
 	}
 }
