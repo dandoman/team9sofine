@@ -18,7 +18,7 @@ Running during normal development:
 
 *All of the following are to be run from the project root directory*
 
-* 'mvn spring-boot:run' - will run the back end on post 8080
+* 'mvn spring-boot:run' - will run the back end on port 8080
 * 'mvn package' - will build the fat jar with the embedded tomcat server
 * Once the fat jar is built, can run using 'java -jar ${jarName}'
 
