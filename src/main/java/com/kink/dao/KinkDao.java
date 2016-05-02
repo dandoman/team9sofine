@@ -28,14 +28,17 @@ public class KinkDao {
 	@Autowired
 	private KinkDataMapper kinkDataMapper;  
 	
+	private static final int PAGE_SIZE = 10;
+	
 	public void createKink(KinkCategory category, String name, String description) {
 		String id = UUID.randomUUID().toString();
 		kinkDataMapper.createKink(id, name, description, category.toString());
 	}
 
 	public List<KinkEntity> getPageOfKinks(int page) {
-		// TODO Auto-generated method stub
-		return new ArrayList<>();
+		int offset = page * PAGE_SIZE;
+		List<KinkEntity> kinkByPage = kinkDataMapper.getKinkByPage(offset);
+		return kinkByPage == null ? new ArrayList<>() : kinkByPage;
 	}
 
 	public KinksterEntity getKinksterById(String kinksterId) {
