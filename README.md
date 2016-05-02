@@ -22,4 +22,5 @@ Running during normal development:
 * 'mvn package' - will build the fat jar with the embedded tomcat server
 * Once the fat jar is built, can run using 'java -jar ${jarName}'
 
-While the service is running, you can see some basic back end swagger API documentation at 'http://localhost:8080/v2/api-docs'
+While the service is running, you can see some basic back end swagger API documentation at 
+* http://localhost:8080/v2/api-docs
