@@ -3,6 +3,7 @@ package com.kink.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,7 @@ import com.kink.InterestLevel;
 import com.kink.KinkCategory;
 import com.kink.Orientation;
 import com.kink.dao.mapper.KinkDataMapper;
+import com.kink.dto.KinkWithAckDTO;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
@@ -71,8 +73,9 @@ public class KinkDao {
 
 	public List<KinkWithLevelView> getPageOfKinksByKinkster(int pageNo,
 			String id) {
-		// TODO Auto-generated method stub
-		return null;
+		int offset = pageNo * PAGE_SIZE;
+		List<KinkWithAckDTO> kinksByUserIdAndPage = kinkDataMapper.getKinksByUserIdAndPage(offset, id);
+		return kinksByUserIdAndPage == null ? new ArrayList<>() : kinksByUserIdAndPage.stream().map(KinkWithLevelView::fromDTO).collect(Collectors.toList());
 	}
 
 	public void createKinkster(String id, String nickname, String groupId, Gender gender,
