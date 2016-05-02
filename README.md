@@ -5,9 +5,9 @@ Back End
 
 What you need:
 
-Java 8 - http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-Maven - https://maven.apache.org/download.cgi
-Postgres - http://www.postgresql.org/download/
+* Java 8 - http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+* Maven - https://maven.apache.org/download.cgi
+* Postgres - http://www.postgresql.org/download/
 
 Getting set up:
 
@@ -15,6 +15,8 @@ Getting set up:
 2) In src/main/resources, use the two scripts to create the database, user and tables. Must be run manually at the moment.
 
 Running during normal development: 
+
+*All of the following are to be run from the project root directory*
 
 'mvn spring-boot:run' - will run the back end on post 8080
 'mvn package' - will build the fat jar with the embedded tomcat server
