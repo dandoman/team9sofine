@@ -3,6 +3,8 @@ package com.kink.api;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 
 import lombok.Setter;
@@ -44,13 +46,16 @@ public class KinksterAPI {
 	@RequestMapping(value = "/create-group", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional
-	public KinksterGroupResponse createGroup(@RequestBody CreateKinksterGroupRequest r){
+	public KinksterGroupResponse createGroup(@RequestBody CreateKinksterGroupRequest r, HttpServletResponse response){
 		r.validate();
 		log.info("Create group request: " + r);
 		KinksterEntity k = kinkLogic.createKinksterNewGroup(r.getNickname(),r.getGender(),r.getOrientation());
 		KinksterGroupResponse resp = new KinksterGroupResponse();
 		resp.setGroupId(k.getGroupId());
 		resp.setKinkster(KinksterView.fromEntity(k));
+		Cookie cookie = new Cookie("user-id", resp.getKinkster().getId());
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		return resp;
 	}
 	
@@ -58,12 +63,14 @@ public class KinksterAPI {
 	@RequestMapping(value = "/join-group", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional
-	public JoinGroupResponse joinGroup(@RequestBody JoinKinksterGroupRequest r){
+	public JoinGroupResponse joinGroup(@RequestBody JoinKinksterGroupRequest r, HttpServletResponse response){
 		r.validate();
 		log.info("Join group request: " + r);
 		KinksterEntity k = kinkLogic.createKinksterExistingGroup(r.getNickname(),r.getGender(),r.getOrientation(), r.getGroupId());
 		JoinGroupResponse resp = new JoinGroupResponse();
-		resp.setKinkster(KinksterView.fromEntity(k));
+		Cookie cookie = new Cookie("user-id", resp.getKinkster().getId());
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		return resp;
 	}
 	

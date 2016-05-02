@@ -1,9 +1,6 @@
 package com.kink.response;
 
-import java.util.UUID;
-
 import lombok.Data;
-
 import com.kink.view.KinksterView;
 
 @Data
