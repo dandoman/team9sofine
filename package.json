@@ -1,0 +1,46 @@
+{
+  "name": "team9sofine",
+  "version": "0.1.0",
+  "description": "App that lets an arbitrary number of users see what sexual kinks they have in common. Anonymously!",
+  "main": "index.html",
+  "dependencies": {
+    "angular": "^1.5.5",
+    "angular-resource": "^1.5.5",
+    "angular-route": "^1.5.5",
+    "angular-sanitize": "^1.5.5",
+    "bootstrap": "^3.3.6",
+    "foundation-sites": "^6.2.1"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-cachebust": "0.0.6",
+    "gulp-clean-css": "^2.0.6",
+    "gulp-concat": "^2.6.0",
+    "gulp-filenames": "^2.0.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace-task": "^0.11.0",
+    "gulp-sass": "^2.3.1",
+    "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-uglify": "^1.5.3",
+    "gulp-watch": "^4.3.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dandoman/team9sofine.git"
+  },
+  "keywords": [
+    "butt"
+  ],
+  "author": "Team9",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dandoman/team9sofine/issues"
+  },
+  "homepage": "https://github.com/dandoman/team9sofine#readme"
+}
