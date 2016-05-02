@@ -1,4 +1,8 @@
+/node_modules
+/public
 /target/
 .classpath
+.idea
 .project
 .settings
+.vagrant
