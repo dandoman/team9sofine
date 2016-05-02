@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,8 +56,7 @@ public class KinkAPI {
 	@ApiOperation(value = "getKinksByKinkster")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public List<KinkWithLevelView> viewKinksByKinkster(@RequestParam(value = "page", required = false) Integer page,
-			@PathParam("id") String id){
+	public List<KinkWithLevelView> viewKinksByKinkster(@PathVariable("id") String id, @RequestParam(value = "page", required = false) Integer page){
 		int pageNo = (page == null) ? 0 : page;
 		return kinkDao.getPageOfKinksByKinkster(pageNo,id);
 	}
