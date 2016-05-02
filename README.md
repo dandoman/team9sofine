@@ -11,15 +11,15 @@ What you need:
 
 Getting set up:
 
-1) Start your postgres database 
-2) In src/main/resources, use the two scripts to create the database, user and tables. Must be run manually at the moment.
+* Start your postgres database 
+* In src/main/resources, use the two scripts to create the database, user and tables. Must be run manually at the moment.
 
 Running during normal development: 
 
 *All of the following are to be run from the project root directory*
 
-'mvn spring-boot:run' - will run the back end on post 8080
-'mvn package' - will build the fat jar with the embedded tomcat server
-Once the fat jar is built, can run using 'java -jar ${jarName}'
+* 'mvn spring-boot:run' - will run the back end on post 8080
+* 'mvn package' - will build the fat jar with the embedded tomcat server
+* Once the fat jar is built, can run using 'java -jar ${jarName}'
 
 While the service is running, you can see some basic back end swagger API documentation at 'http://localhost:8080/v2/api-docs'
