@@ -40,4 +40,9 @@ public class ExternalPageController {
 	public String creation(Model model) {
 		return "creation";
 	}
+	
+	@RequestMapping("/create-kink")
+	public String createKink(Model model) {
+		return "kinkCreation";
+	}
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+    	<title>Team 9, We So Fine</title>
+    	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<link href="/css/test.css" th:href="@{css/test.css}"
+			rel="stylesheet" media="screen" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="/js/create-kink-load.js"></script>
+		<style type="text/css">
+			table, th, td {
+   	 			border: 1px solid black;
+   	 			align: center;
+			}
+		</style>
+	</head>
+	<body>
+    	<div style="text-align: center">
+    		<p>Create some kinks! </p>
+			<form>
+				Name: <input type="text" name="name"></input>
+				Category: <select name="category">
+  							<option value="BASIC">Basic</option>
+  							<option value="TOYS">Toys</option>
+  							<option value="VOYEUR">Voyeur</option>
+  							<option value="BSDM">BSDM</option>
+  							<option value="FETISH">Fetish</option>
+  							<option value="OTHER">Other</option>
+						</select>
+				Description: <input type="text" name="description"></input>
+				<input type="submit" name="submit"></input>
+			</form>
+			<table id="table" border='1' align="center"></table>
+		</div>
+	</body>
+</html>

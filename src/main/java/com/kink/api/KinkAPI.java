@@ -39,10 +39,10 @@ public class KinkAPI {
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional
-	public void createKink(@RequestBody CreateKinkRequest r){
+	public KinkView createKink(@RequestBody CreateKinkRequest r){
 		r.validate();
 		log.info("Create kink request: " + r);
-		kinkDao.createKink(r.getCategory(), r.getName(), r.getDescription());
+		return kinkDao.createKink(r.getCategory(), r.getName(), r.getDescription());
 	}
 	
 	@ApiOperation(value = "getKinks")

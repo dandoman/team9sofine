@@ -22,6 +22,7 @@ import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
 import com.kink.exception.NotFoundException;
+import com.kink.view.KinkView;
 import com.kink.view.KinkWithLevelView;
 
 public class KinkDao {
@@ -32,9 +33,15 @@ public class KinkDao {
 	
 	private static final int PAGE_SIZE = 10;
 	
-	public void createKink(KinkCategory category, String name, String description) {
+	public KinkView createKink(KinkCategory category, String name, String description) {
 		String id = UUID.randomUUID().toString();
 		kinkDataMapper.createKink(id, name, description, category.toString());
+		KinkView v = new KinkView();
+		v.setId(id);
+		v.setName(name);
+		v.setCategory(category);
+		v.setDescription(description);
+		return v;
 	}
 
 	public List<KinkEntity> getPageOfKinks(int page) {
