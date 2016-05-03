@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.kink.dto.KinkWithAckDTO;
 import com.kink.entity.AcknowledgedKinkEntity;
 import com.kink.entity.KinkEntity;
 import com.kink.entity.KinksterEntity;
@@ -37,4 +38,10 @@ public interface KinkDataMapper {
 	@Select("SELECT kink_id as kinkId, kinkster_id as kinksterId, interest_level as interest, direction, created_at as createdAt FROM acknowledged_kinks WHERE kinkster_id IN (SELECT id FROM kinksters WHERE group_id = #{id})")
 	public List<AcknowledgedKinkEntity> getAckedKinksByGroupId(
 			@Param("id") String id);
+	
+	@Select("SELECT id,name,description, category, created_at as createdAt FROM kinks ORDER BY name asc, category asc LIMIT 10 OFFSET #{offset}")
+	public List<KinkEntity> getKinkByPage(@Param("offset") int offset);
+	
+	@Select("SELECT k.category as category,k.id as id,k.name as name,k.description as description,ak.interest_level as interestLevel,ak.direction as direction FROM kinks k LEFT JOIN acknowledged_kinks ak ON k.id = ak.kink_id AND ak.kinkster_id = #{id} ORDER BY name asc, category asc LIMIT 10 OFFSET #{offset}")
+	public List<KinkWithAckDTO> getKinksByUserIdAndPage(@Param("offset") int offset, @Param("id") String id);
 }
