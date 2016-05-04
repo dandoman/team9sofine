@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="kinks">
 <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Kink Machine</title>
     <!-- ICONS -->
     <link rel="icon" type="image/x-icon" href="/assets/images/icons/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="/assets/images/icons/favicon.ico">
+
 
     <!-- CSS
     ------------>
@@ -15,8 +18,14 @@
      ------------>
     @@jsVendor
     @@jsApp
+    @@jsAppTemplates
 </head>
 <body>
+    <!-- /// HEADER /// -->
+    <ng-include src="'components/nav/nav.header.html'"></ng-include>
+
+    <!-- Content -->
+    <section id="ng-view" ng-view autoscroll="true" class="clearfix fragment {{transitionState}}"></section>
 
 </body>
 </html>

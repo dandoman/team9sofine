@@ -1,9 +1,11 @@
 var gulp = require('gulp');
+var angularTemplateCache = require('gulp-angular-templatecache');
 var autoprefixer = require('gulp-autoprefixer');
 var CacheBust = require('gulp-cachebust');
 var concat = require('gulp-concat');
 var del = require('del');
 var filenames = require("gulp-filenames");
+var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
 var minifyCss = require('gulp-clean-css');
 var notify = require('gulp-notify');
@@ -22,11 +24,11 @@ var cachebust = new CacheBust();
  *
  * @see this.templates
  *
- * @param {string} templateString   A string with "{replace}" in it
+ * @param {string} tagPattern       A string with "{replace}" in it
  * @param {string} replacementText  The text to replace "{replace}" with
  */
-var generateAssetTag = function(templateString, replacementText){
-    return templateString.replace('{replace}', replacementText);
+var generateAssetTag = function(tagPattern, replacementText){
+    return tagPattern.replace('{replace}', replacementText);
 };
 
 /**
@@ -44,7 +46,7 @@ var prepend = function(path) {
 // Directory where all the underscore-prepended SCSS files are
 var SCSS_INCLUDES_DIR = 'src/frontend/scss';
 // Directory to dump all our outputted/processed files to
-var OUTPUT_DIR = 'static';
+var OUTPUT_DIR = 'static/';
 var ASSETS = {
     css:   {
         src: {
@@ -63,13 +65,13 @@ var ASSETS = {
         },
         // Where our CSS goes (after minification and concatenation)
         dest: {
-            prefix: OUTPUT_DIR + '/assets/styles',
+            prefix: 'assets/styles',
             // These filenames will get overwritten with cache-busters (ie, there will be a unique hash string injected
             // into the filename so that whenever the file contents change, the filename will also change)
             appFileName: 'app.css',
             vendorFileName: 'vendor.css'
         },
-        template: '<script src="{replace}"></script>'
+        tagPattern: '<link rel="stylesheet" href="{replace}">'
     },
     js:   {
         src: {
@@ -77,33 +79,50 @@ var ASSETS = {
              * Javascript sources for our app. Should just be the AngularJS code
              */
             app: [
-                '*.js',
                 '**/*.js'
             ].map(prepend('src/frontend/js/')),
+            /**
+             * AngularJS templates. These will be preloaded using AngularJS $templateCache. Despite being HTML, these
+             * are treated like JS files, as they eventually end up in a JS file (the $templateCache module)
+             */
+            appTemplates: [
+                '**/*.html'
+            ].map(prepend('src/frontend/js/components/')),
             /**
              * 3rd party vendor javascript libraries
              */
             vendor: [
-                'foundation-sites/dist/foundation.min.js'
+                'angular/angular.js',
+                'angular-resource/angular-resource.js',
+                'angular-route/angular-route.js',
+                'angular-sanitize/angular-sanitize.js'
             ].map(prepend('node_modules/'))
         },
         // Where our javascript goes (after minification and concatenation)
         dest: {
-            prefix: OUTPUT_DIR + '/assets/scripts',
+            prefix: 'assets/scripts',
             // These filenames will get overwritten with cache-busters (ie, there will be a unique hash string injected
             // into the filename so that whenever the file contents change, the filename will also change)
             appFileName: 'app.js',
+            appTemplatesFileName: 'app.templates.js',
             vendorFileName: 'vendor.js'
         },
-        template: '<link rel="stylesheet" href="{replace}">'
+        tagPattern: '<script src="{replace}"></script>'
     },
     html: {
-        src: 'src/frontend/*.html',
-        dest: OUTPUT_DIR
+        src: {
+            /**
+             * Main index.html file
+             */
+            main: 'src/frontend/*.html'
+        },
+        dest: {
+            prefix: OUTPUT_DIR
+        }
     },
     images: {
         src: 'images/**/*',
-        dest: OUTPUT_DIR + '/assets/images'
+        dest: 'assets/images'
     }
 };
 var CONFIG = {
@@ -111,8 +130,16 @@ var CONFIG = {
         includePaths: SCSS_INCLUDES_DIR,
         outputStyle: 'expanded'
     },
+    angularTemplateCache: {
+        root: 'components/',
+        module: 'kinks',
+        standalone: false
+    },
     autoprefixer: {
         browsers: ['> 5%']
+    },
+    cleanCss: {
+        keepSpecialComments: 0 // Remove all comments from CSS
     }
 };
 
@@ -121,7 +148,7 @@ var CONFIG = {
  */
 gulp.task('clean-destination', function () {
     return del([
-        OUTPUT_DIR
+        OUTPUT_DIR + '/**/*'
     ])
 });
 
@@ -141,26 +168,26 @@ gulp.task("prepare-assets:css:vendor", ['clean-destination'], function(){
         .pipe(concat(ASSETS.css.dest.vendorFileName))
         .pipe(cachebust.resources())
         .pipe(filenames("cssVendor"))
-        .pipe(gulp.dest(ASSETS.css.dest.prefix))
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.css.dest.prefix))
 });
 gulp.task("prepare-assets:css:app", ['clean-destination'], function(){
     return gulp.src(ASSETS.css.src.app)
         .pipe(sourcemaps.init())
         .pipe(sass(CONFIG.sass))
         .pipe(autoprefixer(CONFIG.autoprefixer))
-        .pipe(minifyCss())
+        .pipe(minifyCss(CONFIG.cleanCss))
         .pipe(cachebust.resources())
         .pipe(sourcemaps.write())
         .pipe(filenames("cssApp"))
-        .pipe(gulp.dest(ASSETS.css.dest.prefix));
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.css.dest.prefix));
 });
 gulp.task("prepare-assets:js:vendor", ['clean-destination'], function(){
     return gulp.src(ASSETS.js.src.vendor)
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(concat(ASSETS.js.dest.vendorFileName))
         .pipe(cachebust.resources())
         .pipe(filenames("jsVendor"))
-        .pipe(gulp.dest(ASSETS.js.dest.prefix))
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.js.dest.prefix))
 });
 gulp.task("prepare-assets:js:app", ['clean-destination'], function(){
     gulp.src(ASSETS.js.src.app)
@@ -168,8 +195,18 @@ gulp.task("prepare-assets:js:app", ['clean-destination'], function(){
         .pipe(concat(ASSETS.js.dest.appFileName))
         .pipe(cachebust.resources())
         .pipe(filenames("jsApp"))
-        .pipe(gulp.dest(ASSETS.js.dest.prefix))
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.js.dest.prefix))
 });
+gulp.task("prepare-assets:js:appTemplates", ['clean-destination'], function(){
+    gulp.src(ASSETS.js.src.appTemplates)
+        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(angularTemplateCache(ASSETS.js.dest.appTemplatesFileName, CONFIG.angularTemplateCache))
+        .pipe(uglify())
+        .pipe(cachebust.resources())
+        .pipe(filenames("jsAppTemplates"))
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.js.dest.prefix))
+});
+
 // Here we move our images
 gulp.task('prepare-assets:images', ['clean-destination'], function() {
     return gulp.src(ASSETS.images.src)
@@ -181,7 +218,7 @@ gulp.task('prepare-assets:images', ['clean-destination'], function() {
             ],
             use: []
         }))
-        .pipe(gulp.dest(ASSETS.images.dest))
+        .pipe(gulp.dest(OUTPUT_DIR + ASSETS.images.dest))
 });
 
 gulp.task("prepare-assets", [
@@ -189,37 +226,43 @@ gulp.task("prepare-assets", [
     'prepare-assets:js:vendor',
     'prepare-assets:css:app',
     'prepare-assets:js:app',
+    'prepare-assets:js:appTemplates',
     'prepare-assets:images'
 ], function(){
     ASSETS.css.dest.vendorFileName = filenames.get('cssVendor');
     ASSETS.css.dest.appFileName = filenames.get('cssApp');
     ASSETS.js.dest.vendorFileName = filenames.get('jsVendor');
     ASSETS.js.dest.appFileName = filenames.get('jsApp');
+    ASSETS.js.dest.appTemplatesFileName = filenames.get('jsAppTemplates');
 
     // Retrieve the cache-busted filenames (eg, "app.5780b122.js"), and write them out to our HTML index file
-    return gulp.src([ASSETS.html.src])
+    return gulp.src([ASSETS.html.src.main])
         .pipe(notify({ title: "Asset Preparation", message: 'Generating index.html file' }))
         .pipe(replace({
             patterns: [
                 {
                     match: 'cssVendor',
-                    replacement: ASSETS.css.dest.vendorFileName.length ? (generateAssetTag(ASSETS.css.template, ASSETS.css.dest.prefix + '/' + ASSETS.css.dest.vendorFileName)) : ""
+                    replacement: ASSETS.css.dest.vendorFileName.length ? (generateAssetTag(ASSETS.css.tagPattern, ASSETS.css.dest.prefix + '/' + ASSETS.css.dest.vendorFileName)) : ""
                 },
                 {
                     match: 'cssApp',
-                    replacement: ASSETS.css.dest.appFileName.length ? (generateAssetTag(ASSETS.css.template, ASSETS.css.dest.prefix + '/' + ASSETS.css.dest.appFileName)) : ""
+                    replacement: ASSETS.css.dest.appFileName.length ? (generateAssetTag(ASSETS.css.tagPattern, ASSETS.css.dest.prefix + '/' + ASSETS.css.dest.appFileName)) : ""
                 },
                 {
                     match: 'jsVendor',
-                    replacement: ASSETS.js.dest.vendorFileName.length ? (generateAssetTag(ASSETS.js.template, ASSETS.js.dest.prefix + '/' + ASSETS.js.dest.vendorFileName)) : ""
+                    replacement: ASSETS.js.dest.vendorFileName.length ? (generateAssetTag(ASSETS.js.tagPattern, ASSETS.js.dest.prefix + '/' + ASSETS.js.dest.vendorFileName)) : ""
                 },
                 {
                     match: 'jsApp',
-                    replacement: ASSETS.js.dest.appFileName.length ? generateAssetTag(ASSETS.js.template, ASSETS.js.dest.prefix + '/' + ASSETS.js.dest.appFileName) : ""
+                    replacement: ASSETS.js.dest.appFileName.length ? generateAssetTag(ASSETS.js.tagPattern, ASSETS.js.dest.prefix + '/' + ASSETS.js.dest.appFileName) : ""
+                },
+                {
+                    match: 'jsAppTemplates',
+                    replacement: ASSETS.js.dest.appTemplatesFileName.length ? generateAssetTag(ASSETS.js.tagPattern, ASSETS.js.dest.prefix + '/' + ASSETS.js.dest.appTemplatesFileName) : ""
                 }
             ]
         }))
-        .pipe(gulp.dest(ASSETS.html.dest));
+        .pipe(gulp.dest(ASSETS.html.dest.prefix));
 });
 
 /**
