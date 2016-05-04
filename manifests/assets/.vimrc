@@ -1,5 +1,3 @@
-set term=linux
-
 " set tabs as 4 spaces. To reset all tabs as spaces, use :retab
 set expandtab
 set tabstop=4

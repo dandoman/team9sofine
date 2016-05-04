@@ -44,7 +44,7 @@ var prepend = function(path) {
 // Directory where all the underscore-prepended SCSS files are
 var SCSS_INCLUDES_DIR = 'src/frontend/scss';
 // Directory to dump all our outputted/processed files to
-var OUTPUT_DIR = 'public';
+var OUTPUT_DIR = 'static';
 var ASSETS = {
     css:   {
         src: {
@@ -77,8 +77,9 @@ var ASSETS = {
              * Javascript sources for our app. Should just be the AngularJS code
              */
             app: [
-                'app/**/*.js'
-            ].map(prepend('src/frontend/javascript/')),
+                '*.js',
+                '**/*.js'
+            ].map(prepend('src/frontend/js/')),
             /**
              * 3rd party vendor javascript libraries
              */
@@ -95,6 +96,10 @@ var ASSETS = {
             vendorFileName: 'vendor.js'
         },
         template: '<link rel="stylesheet" href="{replace}">'
+    },
+    html: {
+        src: 'src/frontend/*.html',
+        dest: OUTPUT_DIR
     },
     images: {
         src: 'images/**/*',
@@ -116,7 +121,7 @@ var CONFIG = {
  */
 gulp.task('clean-destination', function () {
     return del([
-        OUTPUT_DIR + '/**/*'
+        OUTPUT_DIR
     ])
 });
 
@@ -130,7 +135,7 @@ gulp.task('clean-destination', function () {
  * @see ASSETS.css.dest.prefix
  * @see ASSETS.js.dest.prefix
  */
-gulp.task("prepare-assets:css:vendor", function(){
+gulp.task("prepare-assets:css:vendor", ['clean-destination'], function(){
     return gulp.src(ASSETS.css.src.vendor)
         .pipe(minifyCss({keepBreaks:true}))
         .pipe(concat(ASSETS.css.dest.vendorFileName))
@@ -138,7 +143,7 @@ gulp.task("prepare-assets:css:vendor", function(){
         .pipe(filenames("cssVendor"))
         .pipe(gulp.dest(ASSETS.css.dest.prefix))
 });
-gulp.task("prepare-assets:css:app", function(){
+gulp.task("prepare-assets:css:app", ['clean-destination'], function(){
     return gulp.src(ASSETS.css.src.app)
         .pipe(sourcemaps.init())
         .pipe(sass(CONFIG.sass))
@@ -149,7 +154,7 @@ gulp.task("prepare-assets:css:app", function(){
         .pipe(filenames("cssApp"))
         .pipe(gulp.dest(ASSETS.css.dest.prefix));
 });
-gulp.task("prepare-assets:js:vendor", function(){
+gulp.task("prepare-assets:js:vendor", ['clean-destination'], function(){
     return gulp.src(ASSETS.js.src.vendor)
         .pipe(uglify())
         .pipe(concat(ASSETS.js.dest.vendorFileName))
@@ -157,7 +162,7 @@ gulp.task("prepare-assets:js:vendor", function(){
         .pipe(filenames("jsVendor"))
         .pipe(gulp.dest(ASSETS.js.dest.prefix))
 });
-gulp.task("prepare-assets:js:app", function(){
+gulp.task("prepare-assets:js:app", ['clean-destination'], function(){
     gulp.src(ASSETS.js.src.app)
         .pipe(uglify())
         .pipe(concat(ASSETS.js.dest.appFileName))
@@ -166,7 +171,7 @@ gulp.task("prepare-assets:js:app", function(){
         .pipe(gulp.dest(ASSETS.js.dest.prefix))
 });
 // Here we move our images
-gulp.task('prepare-assets:images', function() {
+gulp.task('prepare-assets:images', ['clean-destination'], function() {
     return gulp.src(ASSETS.images.src)
         .pipe(imagemin({
             progressive: true,
@@ -180,7 +185,6 @@ gulp.task('prepare-assets:images', function() {
 });
 
 gulp.task("prepare-assets", [
-    'clean-destination',
     'prepare-assets:css:vendor',
     'prepare-assets:js:vendor',
     'prepare-assets:css:app',
@@ -193,7 +197,7 @@ gulp.task("prepare-assets", [
     ASSETS.js.dest.appFileName = filenames.get('jsApp');
 
     // Retrieve the cache-busted filenames (eg, "app.5780b122.js"), and write them out to our HTML index file
-    return gulp.src(['src/frontend/javascript/app/index.html'])
+    return gulp.src([ASSETS.html.src])
         .pipe(notify({ title: "Asset Preparation", message: 'Generating index.html file' }))
         .pipe(replace({
             patterns: [
@@ -215,7 +219,7 @@ gulp.task("prepare-assets", [
                 }
             ]
         }))
-        .pipe(gulp.dest('public'));
+        .pipe(gulp.dest(ASSETS.html.dest));
 });
 
 /**

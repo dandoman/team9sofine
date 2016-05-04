@@ -6,7 +6,7 @@ $dbpassword = 'test1234'
 
 #Host entry used for symfony app
 host { 'myapp':
-    ip => '192.168.33.100',
+    ip => '192.168.33.110',
     host_aliases => 'myapp.dev',
 }
 
@@ -16,7 +16,7 @@ exec {"apt-get update":
   path => "/usr/bin",
 }
 
-package {"vim":
+package {['vim', 'lynx']:
   ensure => present,
   require => Exec["apt-get update"],
 }
@@ -36,12 +36,22 @@ service { "apache2":
   require => Package["apache2"]
 }
 
+package {"tomcat7":
+  ensure => present,
+  require => Exec["apt-get update"],
+}
+
+service {"tomcat7":
+  ensure => running,
+  require => Package["tomcat7"]
+}
+
 package {['postgresql', 'postgresql-contrib']:
   ensure => installed,
   require => Exec["apt-get update"]
 }
 
-package { ['openjdk-7-jdk', 'maven']:
+package { ['maven']:
   ensure => installed,
   require => Exec["apt-get update"],
 }
@@ -70,6 +80,12 @@ exec { "AddGulp" :
 	command => "/usr/bin/npm install -g gulp",
 	require => Exec['AddNodePPA']
 }
+
+# Install Java 8
+exec { "InstallJava8" :
+	command => "/usr/bin/apt-add-repository ppa:webupd8team/java && /usr/bin/apt update && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | sudo debconf-set-selections oracle-java8-installer && /usr/bin/apt install -y oracle-java8-installer"
+}
+
 
 # Enable Apache mods
 exec { "/usr/sbin/a2enmod rewrite" :
@@ -100,8 +116,24 @@ file { "/etc/apache2/sites-available/000-default.conf":
 # symlink project files to correct location
 file { "/var/www/myapp":
   ensure => "link",
-  target => "/vagrant/myapp",
+  target => "/vagrant/static",
   require => Package["apache2"],
+  replace => yes,
+  force => true,
+}
+
+# Link up config files for git and vim
+file { "/home/vagrant/.vimrc":
+  ensure => "link",
+  target => "/vagrant/manifests/assets/.vimrc",
+  require => Package["vim"],
+  replace => yes,
+  force => true,
+}
+file { "/home/vagrant/.gitconfig":
+  ensure => "link",
+  target => "/vagrant/manifests/assets/.gitconfig",
+  require => Package["git"],
   replace => yes,
   force => true,
 }
@@ -128,14 +160,4 @@ exec { "apache_lockfile_permissions" :
   command => "/bin/chown -R vagrant:www-data /var/lock/apache2",
   require => Package["apache2"],
   notify  => Service["apache2"],
-}
-
-# -----------------------------------------------
-# Misc
-# -----------------------------------------------
-
-# Use vim as git editor
-exec { "GitConfig" :
-  command => "/usr/bin/git config --global push.default simple && /usr/bin/git config --global core.autocrlf true && /usr/bin/git config --global core.editor 'vim'",
-  require => [Package["vim"],Package["git"]]
 }
