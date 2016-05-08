@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Team 9, We So Fine</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/css/test.css" th:href="@{css/test.css}" rel="stylesheet"
+	media="screen" />
+<style type="text/css">
+table, th, td {
+	border: 1px solid black;
+	align: center;
+}
+</style>
+</head>
+<body>
+	<p th:text="'Hello, ' + ${name} + '!'" />
+	<p th:text="'You are in group: ' + ${groupId}" />
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Category</th>
+			<th>Description</th>
+			<th>Level</th>
+			<th>Direction</th>
+		</tr>
+		<tr th:each="kinkWithLevelView  : ${kinkWithLevelViews}">
+			<td th:text="${kinkWithLevelView.kink.name}"></td>
+			<td th:text="${kinkWithLevelView.kink.category}"></td>
+			<td th:text="${kinkWithLevelView.kink.description}"></td>
+			<td th:text="${kinkWithLevelView.level}"></td>
+			<td th:text="${kinkWithLevelView.direction}"></td>
+		</tr>
+	</table>
+
+	<p th:text="'Page:' + ${pageNo}" />
+
+
+	<form action="/ack-kink">
+		<input type="hidden" name="page" th:value="${previousPage}" />
+		<button type="submit">Previous Page</button>
+	</form>
+	<form action="/ack-kink">
+		<input type="hidden" name="page" th:value="${nextPage}" />
+		<button type="submit">Next Page</button>
+	</form>
+
+</body>
+</html>

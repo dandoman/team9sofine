@@ -1,5 +1,7 @@
 package com.kink.mvc;
 
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,9 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kink.entity.KinksterEntity;
 import com.kink.logic.KinkLogic;
+import com.kink.view.KinkWithLevelView;
 
 @Controller
 @Log4j
@@ -44,5 +48,31 @@ public class ExternalPageController {
 	@RequestMapping("/create-kink")
 	public String createKink(Model model) {
 		return "kinkCreation";
+	}
+	
+	@RequestMapping("/ack-kink")
+	public String ackKink(@CookieValue(value = "user-id", required = false) String userId, @RequestParam(value = "page", required = false) Integer page, Model model) {
+		page = (page == null) ? 0 : page;
+		if(userId == null) {
+			return "redirect:creation";
+		}
+		KinksterEntity kinksterById = null;
+		try {
+			kinksterById = logic.getKinkDao().getKinksterById(userId);
+		} catch (Exception e) {
+			return "redirect:creation";
+		}
+		
+		List<KinkWithLevelView> pageOfKinksByKinkster = logic.getKinkDao().getPageOfKinksByKinkster(page, kinksterById.getId());
+		
+		Integer previousPage = (page == 0) ? 0 : page - 1;
+		
+		model.addAttribute("name", kinksterById.getNickname());
+		model.addAttribute("groupId", kinksterById.getGroupId());
+		model.addAttribute("kinkWithLevelViews", pageOfKinksByKinkster);
+		model.addAttribute("pageNo", page);
+		model.addAttribute("nextPage", page + 1);
+		model.addAttribute("previousPage", previousPage);
+		return "kinkAck";
 	}
 }
