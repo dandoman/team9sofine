@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="/css/test.css" th:href="@{css/test.css}" rel="stylesheet"
 	media="screen" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <style type="text/css">
 table, th, td {
 	border: 1px solid black;
@@ -24,11 +25,36 @@ table, th, td {
 			<th>Direction</th>
 		</tr>
 		<tr th:each="kinkWithLevelView  : ${kinkWithLevelViews}">
+			<form onsubmit="ackKink()">
 			<td th:text="${kinkWithLevelView.kink.name}"></td>
 			<td th:text="${kinkWithLevelView.kink.category}"></td>
 			<td th:text="${kinkWithLevelView.kink.description}"></td>
-			<td th:text="${kinkWithLevelView.level}"></td>
-			<td th:text="${kinkWithLevelView.direction}"></td>
+			<td th:if="${kinkWithLevelView.level != null}"
+				th:text="${kinkWithLevelView.level}"></td>
+			<td th:if="${kinkWithLevelView.level == null}">
+				<select id="formLevel"
+					name="interest">
+					<option value="NO">I'm not into this</option>
+					<option value="YES">I'm into this</option>
+					<option value="OPEN">I'm open to trying this</option>
+				</select>
+			</td>
+			<td th:if="${kinkWithLevelView.direction != null}"
+				th:text="${kinkWithLevelView.direction}"></td>
+			<td th:if="${kinkWithLevelView.direction == null}">
+				<select id="formDirection"
+					name="direction">
+					<option value="RECEIVING">Receiving</option>
+					<option value="GIVING">Giving</option>
+					<option value="BOTH">Both</option>
+				</select>
+			</td>
+			<td>
+				<input type="hidden" id="kinkId" th:value="${kinkWithLevelView.kink.id}" />
+				<input type="hidden" id="kinksterId" th:value="${kinksterId}" />
+				<input type="submit" name="Submit"></input>
+			</td>
+			</form>
 		</tr>
 	</table>
 
@@ -43,6 +69,33 @@ table, th, td {
 		<input type="hidden" name="page" th:value="${nextPage}" />
 		<button type="submit">Next Page</button>
 	</form>
+	
+	<script type="text/javascript">
+		function ackKink() {
+			
+			var data = {};
+			data.kinksterId = document.getElementById("kinksterId").value;
+			data.kinkId = document.getElementById("kinkId").value;
+			data.interest = document.getElementById("formLevel").value;
+			data.direction = document.getElementById("formDirection").value;
+		
+	    	var entity = JSON.stringify(data);
+	    	
+	    	jQuery.ajax ({
+			 		url: "/api/kinkster/acknowledge-kink",
+				type: "POST",
+				data: entity,
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(retData) {
+					console.log(retData);
+				},
+				failure: function(retData) {
+					console.log(retData);
+				}
+			});
+		}
+	</script>
 
 </body>
 </html>

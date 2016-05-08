@@ -73,6 +73,7 @@ public class ExternalPageController {
 		model.addAttribute("pageNo", page);
 		model.addAttribute("nextPage", page + 1);
 		model.addAttribute("previousPage", previousPage);
+		model.addAttribute("kinksterId", kinksterById.getId());
 		return "kinkAck";
 	}
 }
