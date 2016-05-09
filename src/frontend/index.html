@@ -21,11 +21,15 @@
     @@jsAppTemplates
 </head>
 <body>
-    <!-- /// HEADER /// -->
-    <ng-include src="'components/nav/nav.header.html'"></ng-include>
+    <!-- HEADER -->
+    <ng-include src="'components/navigation/nav.header.html'"></ng-include>
 
-    <!-- Content -->
-    <section id="ng-view" ng-view autoscroll="true" class="clearfix fragment {{transitionState}}"></section>
+    <!-- CONTENT -->
+    <div class="row medium-8 large-8 small-12 columns">
+        <section id="ng-view" ng-view autoscroll="true" class="clearfix fragment {{transitionState}}"></section>
+    </div>
 
+    <!-- FOOTER -->
+    <ng-include src="'components/navigation/nav.footer.html'"></ng-include>
 </body>
 </html>

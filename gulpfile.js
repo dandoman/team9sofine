@@ -60,7 +60,11 @@ var ASSETS = {
              * CSS sources from 3rd party vendors/libraries
              */
             vendor: [
-
+                // If the vendor has SCSS source files, then they'll be included our own SCSS file, `main.scss`.
+                // Why? Because SCSS will only compile styles and classes that are used, so this method will
+                // reduce file size.
+                //
+                // However, if there aren't any SCSS files, then dump the relative path to the CSS files here
             ].map(prepend('node_modules/'))
         },
         // Where our CSS goes (after minification and concatenation)
@@ -183,7 +187,7 @@ gulp.task("prepare-assets:css:app", ['clean-destination'], function(){
 });
 gulp.task("prepare-assets:js:vendor", ['clean-destination'], function(){
     return gulp.src(ASSETS.js.src.vendor)
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(concat(ASSETS.js.dest.vendorFileName))
         .pipe(cachebust.resources())
         .pipe(filenames("jsVendor"))

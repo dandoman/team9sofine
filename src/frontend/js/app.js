@@ -5,7 +5,11 @@ if (typeof(env) == 'undefined' && top != self){
 
 (function() {
     var modules = [
-        'kinks.nav'
+        'kinks.nav',
+
+        'ngAnimate',
+        'ngResource',
+        'ngRoute'
     ];
 
     angular
