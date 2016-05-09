@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Team 9, We So Fine</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/css/test.css" th:href="@{css/test.css}" rel="stylesheet"
+	media="screen" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<style type="text/css">
+table, th, td {
+	border: 1px solid black;
+	align: center;
+}
+</style>
+</head>
+<body>
+	<p th:text="'Hello, ' + ${name} + '!'" />
+	<p th:text="'You are in group: ' + ${groupId}" />
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Category</th>
+			<th>Description</th>
+			<th>Level</th>
+			<th>Direction</th>
+		</tr>
+		<tr th:each="kinkWithLevelView  : ${kinkWithLevelViews}">
+		<form th:onsubmit="'ackKink' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)} + '()'">
+			<td th:text="${kinkWithLevelView.kink.name}"></td>
+			<td th:text="${kinkWithLevelView.kink.category}"></td>
+			<td th:text="${kinkWithLevelView.kink.description}"></td>
+			<td th:if="${kinkWithLevelView.level != null}"
+				th:text="${kinkWithLevelView.level}"></td>
+			<td th:if="${kinkWithLevelView.level == null}">
+				<select th:id="'formInterest' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)}" name="interest">
+					<option value="NO">I'm not into this</option>
+					<option value="YES">I'm into this</option>
+					<option value="OPEN">I'm open to trying this</option>
+				</select>
+			</td>
+			<td th:if="${kinkWithLevelView.direction != null}"
+				th:text="${kinkWithLevelView.direction}"></td>
+			<td th:if="${kinkWithLevelView.direction == null}">
+				<select th:id="'formDirection' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)}" name="direction">
+					<option value="RECEIVING">Receiving</option>
+					<option value="GIVING">Giving</option>
+					<option value="BOTH">Both</option>
+				</select>
+			</td>
+			<td>
+				<input type="hidden" th:id="'kinkId' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)}" th:value="${kinkWithLevelView.kink.id}" />
+				<input type="hidden" id="kinksterId" th:value="${kinksterId}" />
+				<input type="submit" name="Submit"></input>
+			</td>
+		</form>
+		</tr>
+	</table>
+
+	<p th:text="'Page:' + ${pageNo}" />
+
+
+	<form action="/ack-kink">
+		<input type="hidden" name="page" th:value="${previousPage}" />
+		<button type="submit">Previous Page</button>
+	</form>
+	<form action="/ack-kink">
+		<input type="hidden" name="page" th:value="${nextPage}" />
+		<button type="submit">Next Page</button>
+	</form>
+	
+	<script type="text/javascript">
+		function ackKink(number) {
+			
+			var data = {};
+			data.kinksterId = document.getElementById("kinksterId").value;
+			data.kinkId = document.getElementById("kinkId".concat(number)).value;
+			data.interest = document.getElementById("formInterest".concat(number)).value;
+			data.direction = document.getElementById("formDirection".concat(number)).value;
+		
+	    	var entity = JSON.stringify(data);
+	    	
+	    	jQuery.ajax ({
+			 		url: "/api/kinkster/acknowledge-kink",
+				type: "POST",
+				data: entity,
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(retData) {
+					console.log(retData);
+				},
+				failure: function(retData) {
+					console.log(retData);
+				}
+			});
+		}
+		
+		function ackKink0() {
+			ackKink(0);
+		}
+		
+		function ackKink1() {
+			ackKink(1);
+		}
+		
+		function ackKink2() {
+			ackKink(2);
+		}
+		
+		function ackKink3() {
+			ackKink(3);
+		}
+		
+		function ackKink4() {
+			ackKink(4);
+		}
+		
+		function ackKink5() {
+			ackKink(5);
+		}
+		
+		function ackKink6() {
+			ackKink(6);
+		}
+		
+		function ackKink7() {
+			ackKink(7);
+		}
+		
+		function ackKink8() {
+			ackKink(8);
+		}
+		
+		function ackKink9() {
+			ackKink(9);
+		}
+	</script>
+
+</body>
+</html>
