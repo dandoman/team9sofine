@@ -42,6 +42,8 @@ public class KinksterAPI {
 	@Setter
 	private KinkLogic kinkLogic; 
 	
+	private static final int COOKIE_MAX_AGE_SECONDS = 20*24*60;
+	
 	@ApiOperation(value = "createGroup")
 	@RequestMapping(value = "/create-group", method = RequestMethod.POST)
 	@ResponseBody
@@ -55,6 +57,7 @@ public class KinksterAPI {
 		resp.setKinkster(KinksterView.fromEntity(k));
 		Cookie cookie = new Cookie("user-id", resp.getKinkster().getId());
 		cookie.setPath("/");
+		cookie.setMaxAge(COOKIE_MAX_AGE_SECONDS);
 		response.addCookie(cookie);
 		return resp;
 	}
@@ -70,6 +73,7 @@ public class KinksterAPI {
 		JoinGroupResponse resp = new JoinGroupResponse();
 		Cookie cookie = new Cookie("user-id", resp.getKinkster().getId());
 		cookie.setPath("/");
+		cookie.setMaxAge(COOKIE_MAX_AGE_SECONDS);
 		response.addCookie(cookie);
 		return resp;
 	}
