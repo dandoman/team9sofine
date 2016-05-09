@@ -16,7 +16,7 @@
 	<body>
     	<div style="text-align: center">
     		<p>Create a new group </p>
-			<form onsubmit="createFormSubmit()">
+			<form id="createForm">
 				Nickname: <input id= "createNickname" type="text" name="nickname"></input>
 				<input type="hidden" name="gender" value="OTHER" />
 				<input type="hidden" name="orientation" value="BI" />
@@ -24,7 +24,7 @@
 			</form>
 			
 			<p>Join an existing group </p>
-			<form onsubmit="joinFormSubmit()">
+			<form id="joinForm">
 				Nickname: <input id= "joinNickname" type="text" name="nickname"></input>
 				Group Id: <input id="joinGroupId" type="text" name="groupId"></input>
 				<input type="hidden" name="gender" value="OTHER" />
@@ -37,7 +37,7 @@
 	
 	<script type="text/javascript">
 	
-		function joinFormSubmit(event) {
+		function joinFormSubmit() {
 				
 			var data = {};
 			data.nickname = document.getElementById("joinNickname").value;
@@ -55,17 +55,16 @@
 					contentType: "application/json; charset=utf-8",
 					success: function(retData){
 						console.log(retData);
-						window.location.replace("/ack-kink");
+						window.location.href = "/ack-kink";
 					},
 					failure: function(retData){
 						console.log(retData);
-						window.location.replace("/creation");	
+						window.location.href = "/creation";	
     				}	
 				});
 		}
 		
-		function createFormSubmit(event) {
-			
+		function createFormSubmit() {
 			var data = {};
 			data.nickname = document.getElementById("createNickname").value;
 			data.gender = "OTHER";
@@ -80,14 +79,22 @@
 					dataType: "json",
 					contentType: "application/json; charset=utf-8",
 					success: function(retData){
-						console.log(retData);
-						window.location = "/ack-kink";	
+						window.location.replace("/ack-kink");	
 					},
 					failure: function(retData){
-						console.log(retData);
-						window.location = "/creation";	
+						window.location.replace("/creation");	
     				}	
 				});
 		}
+		
+		$( "#createForm" ).submit(function( event ) {
+			  event.preventDefault();
+			  createFormSubmit();
+			});
+		
+		$( "#joinForm" ).submit(function( event ) {
+			  event.preventDefault();
+			  joinFormSubmit();
+			});
 	</script>
 </html>
