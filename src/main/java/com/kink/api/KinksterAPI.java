@@ -71,6 +71,7 @@ public class KinksterAPI {
 		log.info("Join group request: " + r);
 		KinksterEntity k = kinkLogic.createKinksterExistingGroup(r.getNickname(),r.getGender(),r.getOrientation(), r.getGroupId());
 		JoinGroupResponse resp = new JoinGroupResponse();
+		resp.setKinkster(KinksterView.fromEntity(k));
 		Cookie cookie = new Cookie("user-id", resp.getKinkster().getId());
 		cookie.setPath("/");
 		cookie.setMaxAge(COOKIE_MAX_AGE_SECONDS);

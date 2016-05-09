@@ -6,7 +6,6 @@
     	<link href="/css/test.css" th:href="@{css/test.css}"
 			rel="stylesheet" media="screen" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script src="/js/create-load.js"></script>
 		<style type="text/css">
 			table, th, td {
    	 			border: 1px solid black;
@@ -17,21 +16,78 @@
 	<body>
     	<div style="text-align: center">
     		<p>Create a new group </p>
-			<form>
-				Nickname: <input type="text" name="nickname"></input>
-				Gender: <select name="gender">
-  							<option value="MALE">Male</option>
-  							<option value="FEMALE">Female</option>
-  							<option value="OTHER">Other</option>
-						</select>
-				Orientation: <select name="orientation">
-  							<option value="HOMO">Homosexual</option>
-  							<option value="HETERO">Heterosexual</option>
-  							<option value="BI">Other</option>
-						</select>
+			<form onsubmit="createFormSubmit()">
+				Nickname: <input id= "createNickname" type="text" name="nickname"></input>
+				<input type="hidden" name="gender" value="OTHER" />
+				<input type="hidden" name="orientation" value="BI" />
+				<input type="submit" name="submit"></input>
+			</form>
+			
+			<p>Join an existing group </p>
+			<form onsubmit="joinFormSubmit()">
+				Nickname: <input id= "joinNickname" type="text" name="nickname"></input>
+				Group Id: <input id="joinGroupId" type="text" name="groupId"></input>
+				<input type="hidden" name="gender" value="OTHER" />
+				<input type="hidden" name="orientation" value="BI" />
 				<input type="submit" name="submit"></input>
 			</form>
 			<table id="table" border='1' align="center"></table>
 		</div>
 	</body>
+	
+	<script type="text/javascript">
+	
+		function joinFormSubmit(event) {
+				
+			var data = {};
+			data.nickname = document.getElementById("joinNickname").value;
+			data.groupId = document.getElementById("joinGroupId").value;
+			data.gender = "OTHER";
+			data.orientation = "BI";
+		
+	    	var entity = JSON.stringify(data);
+			
+				jQuery.ajax ({
+				 		url: "/api/kinkster/join-group",
+					type: "POST",
+					data: entity,
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(retData){
+						console.log(retData);
+						window.location.replace("/ack-kink");
+					},
+					failure: function(retData){
+						console.log(retData);
+						window.location.replace("/creation");	
+    				}	
+				});
+		}
+		
+		function createFormSubmit(event) {
+			
+			var data = {};
+			data.nickname = document.getElementById("createNickname").value;
+			data.gender = "OTHER";
+			data.orientation = "BI";
+		
+	    	var entity = JSON.stringify(data);
+			
+				jQuery.ajax ({
+				 		url: "/api/kinkster/create-group",
+					type: "POST",
+					data: entity,
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function(retData){
+						console.log(retData);
+						window.location = "/ack-kink";	
+					},
+					failure: function(retData){
+						console.log(retData);
+						window.location = "/creation";	
+    				}	
+				});
+		}
+	</script>
 </html>
