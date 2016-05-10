@@ -26,7 +26,7 @@ table, th, td {
 			<th>Direction</th>
 		</tr>
 		<tr th:each="kinkWithLevelView  : ${kinkWithLevelViews}">
-		<form th:onsubmit="'ackKink' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)} + '()'">
+		<form th:id="'ackKink' + ${kinkWithLevelViews.indexOf(kinkWithLevelView)}">
 			<td th:text="${kinkWithLevelView.kink.name}"></td>
 			<td th:text="${kinkWithLevelView.kink.category}"></td>
 			<td th:text="${kinkWithLevelView.kink.description}"></td>
@@ -95,45 +95,67 @@ table, th, td {
 			});
 		}
 		
-		function ackKink0() {
-			ackKink(0);
-		}
 		
-		function ackKink1() {
-			ackKink(1);
-		}
+		$( "#ackKink0" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(0);
+			  location.reload();
+			});
 		
-		function ackKink2() {
-			ackKink(2);
-		}
 		
-		function ackKink3() {
-			ackKink(3);
-		}
+		$( "#ackKink1" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(1);
+			  location.reload();
+			});
 		
-		function ackKink4() {
-			ackKink(4);
-		}
+		$( "#ackKink2" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(2);
+			  location.reload();
+			});
 		
-		function ackKink5() {
-			ackKink(5);
-		}
+		$( "#ackKink3" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(3);
+			  location.reload();
+			});
 		
-		function ackKink6() {
-			ackKink(6);
-		}
+		$( "#ackKink4" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(4);
+			  location.reload();
+			});
 		
-		function ackKink7() {
-			ackKink(7);
-		}
+		$( "#ackKink5" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(5);
+			  location.reload();
+			});
 		
-		function ackKink8() {
-			ackKink(8);
-		}
+		$( "#ackKink6" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(6);
+			  location.reload();
+			});
 		
-		function ackKink9() {
-			ackKink(9);
-		}
+		$( "#ackKink7" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(7);
+			  location.reload();
+			});
+		
+		$( "#ackKink8" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(8);
+			  location.reload();
+			});
+		
+		$( "#ackKink9" ).submit(function( event ) {
+			  event.preventDefault();
+			  ackKink(9);
+			  location.reload();
+			});
 	</script>
 
 </body>
