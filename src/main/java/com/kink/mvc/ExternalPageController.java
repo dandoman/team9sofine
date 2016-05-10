@@ -1,6 +1,7 @@
 package com.kink.mvc;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kink.entity.KinksterEntity;
 import com.kink.logic.KinkLogic;
+import com.kink.response.GroupKinkResponse;
+import com.kink.view.KinkBreakdownView;
 import com.kink.view.KinkWithLevelView;
 
 @Controller
@@ -33,8 +36,7 @@ public class ExternalPageController {
 		
 		try {
 			KinksterEntity kinksterById = logic.getKinkDao().getKinksterById(userId);
-			model.addAttribute("name", kinksterById.getNickname());
-			return "index";
+			return "redirect:ack-kink";
 		} catch (Exception e){
 			return "redirect:creation";
 		}
@@ -75,5 +77,25 @@ public class ExternalPageController {
 		model.addAttribute("previousPage", previousPage);
 		model.addAttribute("kinksterId", kinksterById.getId());
 		return "kinkAck";
+	}
+	
+	@RequestMapping("/results")
+	public String getCompatible(@CookieValue(value = "user-id", required = false) String userId, Model model) {
+		if(userId == null) {
+			return "redirect:creation";
+		}
+		KinksterEntity kinksterById = null;
+		try {
+			kinksterById = logic.getKinkDao().getKinksterById(userId);
+		} catch (Exception e) {
+			return "redirect:creation";
+		}
+		
+		GroupKinkResponse compatibleKinks = GroupKinkResponse.fromCompatibleKinkMap(kinksterById.getId(), logic.computeCompatibleKinks(kinksterById.getId()));
+		List<KinkBreakdownView> kinkBreakdownList = compatibleKinks.getKinkBreakdown();
+		model.addAttribute("kinkBreakdowns", kinkBreakdownList);
+		model.addAttribute("name", kinksterById.getNickname());
+		model.addAttribute("groupId", kinksterById.getGroupId());
+		return "results";
 	}
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Team 9, We So Fine</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="/css/test.css" th:href="@{css/test.css}" rel="stylesheet"
+	media="screen" />
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<style type="text/css">
+table, th, td {
+	border: 1px solid black;
+	align: center;
+}
+</style>
+</head>
+<body>
+	<p th:text="'Hello, ' + ${name} + '!'" />
+	<p th:text="'You are in group: ' + ${groupId}" />
+	<input type="button" onclick="location.href='/ack-kink';" value="Answer More Questions" />
+	<table>
+		<tr th:each="kinkBreakdown  : ${kinkBreakdowns}">
+			<td th:text="${kinkBreakdown.kinkster.nickname}"></td>
+			<td>
+				<table>
+					<tr th:each="kink : ${kinkBreakdown.compatibleKinks}">
+						<td th:text="${kink.name}"></td>
+						<td th:text="${kink.category}"></td>
+						<td th:text="${kink.description}"></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
