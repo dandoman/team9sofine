@@ -96,9 +96,23 @@ public class KinkLogic {
 	
 	private boolean isCompatible(KinkWithLevelView mine, KinkWithLevelView theirs) {
 		if(mine.getKink().getId().equals(theirs.getKink().getId())) {
-			return isCompatibleDirection(mine.getDirection(), theirs.getDirection());
+			return isCompatibleDirection(mine.getDirection(), theirs.getDirection()) && isCompatibleInterest(mine.getLevel(), theirs.getLevel());
 		}
 		return false;
+	}
+
+	private boolean isCompatibleInterest(InterestLevel myLevel,
+			InterestLevel theirLevel) {
+		switch(myLevel) {
+		case OPEN:
+			return InterestLevel.YES.equals(theirLevel);
+		case YES:
+			return InterestLevel.YES.equals(theirLevel) || InterestLevel.OPEN.equals(theirLevel);
+		case NO:
+			return false;
+		default:
+			return false;
+		}
 	}
 
 	private boolean isCompatibleDirection(Direction myDirection,
