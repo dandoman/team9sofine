@@ -38,6 +38,7 @@ public class KinkLogic {
 		List<AcknowledgedKinkEntity> ackedKinks = kinkDao.getAcknowledgedKinksByGroupId(kinkster.getGroupId());
 		Map<String, List<AcknowledgedKinkEntity>> collectedAcks = ackedKinks.stream().collect(Collectors.groupingBy(AcknowledgedKinkEntity::getKinksterId));
 		Map<KinksterEntity, List<KinkWithLevelView>> kinksterMap = new HashMap<>();
+		
 		collectedAcks.entrySet().forEach(entry -> {
 			KinksterEntity k = kinkDao.getKinksterById(entry.getKey());
 			List<KinkWithLevelView> kinks = entry.getValue().stream().map(acked -> {
@@ -51,22 +52,22 @@ public class KinkLogic {
 			kinksterMap.put(k, kinks);
 		});
 		
-		List<KinkWithLevelView> myKinks = (kinksterMap.get(kinkster) == null ) ? new ArrayList<>() : kinksterMap.get(kinkster).stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
+		Map<String, List<KinkWithLevelView>> myKinks = (kinksterMap.get(kinkster) == null ) ? new HashMap<>() : kinksterMap.get(kinkster).stream().collect(Collectors.groupingBy(x -> x.getKink().getId()));
+		kinksterMap.remove(kinkster);
 		Map<KinksterEntity, List<KinkWithLevelView>> compatibleKinks = new HashMap<>();
 		kinksterMap.entrySet().forEach(entry -> {
-			List<KinkWithLevelView> localKinks = entry.getValue().stream().filter(k -> InterestLevel.OPEN.equals(k.getLevel()) || InterestLevel.YES.equals(k.getLevel())).collect(Collectors.toList());
+			Map<String, List<KinkWithLevelView>> theirKinks = entry.getValue().stream().collect(Collectors.groupingBy(x -> x.getKink().getId()));
 			List<KinkWithLevelView> sameKinks = new ArrayList<>();
-			if(entry.getKey().getId().equals(kinkster.getId())){
-				sameKinks.addAll(localKinks);
-			} else {
-				for (KinkWithLevelView myKink : myKinks) {
-					for (KinkWithLevelView theirKink : localKinks) {
-						if(isCompatible(myKink,theirKink)) {
-							sameKinks.add(theirKink);
-						}
+			myKinks.entrySet().forEach(kinkById -> {
+				List<KinkWithLevelView> list = theirKinks.get(kinkById.getKey());
+				if(list != null && !list.isEmpty()) {
+					KinkWithLevelView myKink = kinkById.getValue().get(0);
+					KinkWithLevelView theirKink = list.get(0);
+					if(isCompatible(myKink, theirKink)) {
+						sameKinks.add(myKink);
 					}
 				}
-			}
+			});
 			compatibleKinks.put(entry.getKey(), sameKinks);
 		});
 		
