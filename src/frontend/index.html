@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="kinks">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kink Machine</title>
+    <!-- ICONS -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/icons/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/icons/favicon.ico">
+
+
+    <!-- CSS
+    ------------>
+    @@cssVendor
+    @@cssApp
+
+    <!-- JS
+     ------------>
+    @@jsVendor
+    @@jsApp
+    @@jsAppTemplates
+</head>
+<body>
+    <!-- HEADER -->
+    <ng-include src="'components/navigation/nav.header.html'"></ng-include>
+
+    <!-- CONTENT -->
+    <div class="row medium-8 large-8 small-12 columns">
+        <section id="ng-view" ng-view autoscroll="true" class="clearfix fragment {{transitionState}}"></section>
+    </div>
+
+    <!-- FOOTER -->
+    <ng-include src="'components/navigation/nav.footer.html'"></ng-include>
+</body>
+</html>
